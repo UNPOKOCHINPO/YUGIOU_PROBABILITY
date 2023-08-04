@@ -26,17 +26,8 @@ function want_combi_of_2cards(a_s, b_s, hands, dontwant = []) {
 }
 
 function want_combi_of_3cards(a_s, b_s, c_s, hands, dontwant = []) {
-    if (a_s.length == 0) {
-        want_combi_of_2cards(b_s, c_s, hands, dontwant = [])
-        return;
-    }
-    if (b_s.length == 0) {
-        want_combi_of_2cards(a_s, c_s, hands, dontwant = [])
-        return;
-    }
-    if (c_s.length == 0) {
-        want_combi_of_2cards(a_s, b_s, hands, dontwant = [])
-        return;
+    if (dontwant.length == 0) {
+        return false;
     }
     for (const a of a_s) {
         for (const b of b_s) {
