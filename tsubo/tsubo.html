@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calculate Prob Of Pots</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            border: 1px solid #888;
+            background-color: #333;
+            color: #fff;
+        }
+
+        input[type="button"] {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        pre {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>壺の確率計算比較ページ</h1>
+    <form id="sumForm">
+        <label for="n">デッキ枚数：</label>
+        <input type="number" id="n" required><br>
+
+        <label for="m">引きたい札の枚数：</label>
+        <input type="number" id="m" required><br>
+
+        <input type="button" value="計算" onclick="calculateAndDisplaySum()">
+    </form>
+
+    <pre id="result"></pre>
+
+    <script type="text/javascript" src="tsubo.js"></script>
+    <script>
+        function calculateAndDisplaySum() {
+            const n = parseInt(document.getElementById('n').value);
+            const m = parseInt(document.getElementById('m').value);
+
+            // tsubo.jsの関数を呼び出し
+            const goyoku = goyoku_draw(n, m);
+            const godon = godon_draw(n, m);
+            const kinken = kinken_draw(n, m);
+            const gokin = gokin_draw(n, m);
+
+            // 結果の表示
+            document.getElementById('result').innerText = "強欲な壺：" + goyoku
+                + "\n強欲で貪欲な壺：" + godon
+                + "\n金満で謙虚な壺：" + kinken
+                + "\n強欲で金満な壺：" + gokin;
+        }
+    </script>
+</body>
+
+</html>
