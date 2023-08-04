@@ -3,69 +3,21 @@
 
 <head>
     <title>Calculate Prob Of Pots</title>
-    <style>
-        body {
-            background-color: #111;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        form {
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="number"] {
-            padding: 5px;
-            border: 1px solid #888;
-            background-color: #333;
-            color: #fff;
-        }
-
-        input[type="button"] {
-            padding: 10px 20px;
-            margin-top: 10px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="button"]:hover {
-            background-color: #45a049;
-        }
-
-        pre {
-            margin-top: 20px;
-            white-space: pre-wrap;
-        }
-
-        #canvasContainer {
-            overflow: auto;
-            width: 420px;
-            /* Canvasの幅+20px(軸の終点の余白) */
-            height: 220px;
-            /* Canvasの高さ+20px(軸の終点の余白) */
-        }
-
-        canvas {
-            display: block;
-            margin: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="../calc_page_css.css">
 </head>
 
 <body>
     <h1>壺の確率計算比較ページ</h1>
+    <h2>このページでできること</h2>
+    <div class="text-box">
+        デッキに壺を入れたときに一枚初動を引ける確率を計算します。
+        例えば、40枚デッキの中に、ブルーアイズホワイトドラゴン3枚、強欲な壺2枚を入れた場合の確率を算出したい場合、下の入力フォームに順に、「40,3,2」を入力します。
+        すると、初手で引ける確率が算出され、表示されます。
+        <br>
+        他の壺についても確率が計算されます。
+    </div>
+
+    <h2>入力フォーム</h2>
     <form id="sumForm">
         <label for="n">デッキ枚数：</label>
         <input type="number" id="n" required><br>
@@ -78,10 +30,11 @@
 
         <input type="button" value="計算" onclick="calculateAndDisplaySum()">
     </form>
+    (※)1枚初動を引く確率を算出しています.
 
     <pre id="result"></pre>
 
-    <h1>数値の比較棒グラフ</h1>
+    <h2>数値の比較棒グラフ</h2>
     <canvas id="barChart" width="500" height="200"></canvas>
 
     <script type="text/javascript" src="tsubo.js"></script>
@@ -161,16 +114,16 @@
             const k = parseInt(document.getElementById('k').value);
 
             // tsubo.jsの関数を呼び出し
-            const goyoku = goyoku_draw(n, m, k);
-            const godon = godon_draw(n, m, k);
-            const kinken = kinken_draw(n, m, k);
-            const gokin = gokin_draw(n, m, k);
+            const goyoku = Math.round(goyoku_draw(n, m, k) * 10000) / 100;
+            const godon = Math.round(godon_draw(n, m, k) * 10000) / 100;
+            const kinken = Math.round(kinken_draw(n, m, k) * 10000) / 100;
+            const gokin = Math.round(gokin_draw(n, m, k) * 10000) / 100;
 
             // 結果の表示
-            document.getElementById('result').innerText = "強欲な壺：" + goyoku
-                + "\n強欲で貪欲な壺：" + godon
-                + "\n金満で謙虚な壺：" + kinken
-                + "\n強欲で金満な壺：" + gokin;
+            document.getElementById('result').innerText = "強欲な壺：" + goyoku + '%'
+                + "\n強欲で貪欲な壺：" + godon + '%'
+                + "\n金満で謙虚な壺：" + kinken + '%'
+                + "\n強欲で金満な壺：" + gokin + '%';
 
             drawBarChart();
         }

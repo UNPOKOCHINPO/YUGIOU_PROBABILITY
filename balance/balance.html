@@ -3,69 +3,25 @@
 
 <head>
     <title>Best Balance</title>
-    <style>
-        body {
-            background-color: #111;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        form {
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="number"] {
-            padding: 5px;
-            border: 1px solid #888;
-            background-color: #333;
-            color: #fff;
-        }
-
-        input[type="button"] {
-            padding: 10px 20px;
-            margin-top: 10px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="button"]:hover {
-            background-color: #45a049;
-        }
-
-        pre {
-            margin-top: 20px;
-            white-space: pre-wrap;
-        }
-
-        #canvasContainer {
-            overflow: auto;
-            width: 420px;
-            /* Canvasの幅+20px(軸の終点の余白) */
-            height: 220px;
-            /* Canvasの高さ+20px(軸の終点の余白) */
-        }
-
-        canvas {
-            display: block;
-            margin: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="../calc_page_css.css">
 </head>
 
 <body>
     <h1>手札のバランスに最適なデッキバランスを取得</h1>
+    <h2>このページでできること</h2>
+    <div class="text-box">
+        遊戯王のデッキ構築において、手札に来るモンスターと魔法罠の比率は重要です。例えば、魔弾デッキであれば、モンスター1枚か2枚、残りは妨害系の魔法罠を引くことが望ましいでしょう。<br>
+        要するに初手5枚で、(モンスター, 魔法罠)=(1, 4)のような手札になって欲しいわけです。
+        <br>
+        このページでは、欲しい手札を入力すると、モンスターを何枚デッキに入れれば良いか自動で算出し、最適なデッキ構築を教えてくれます。<br>
+        それだけでなく、最適なデッキ構築にしたときに、全パターンの手札の確率も算出できるようにしました。
+        <br><br>
+        例えば、以下の入力フォームに, 「40, 3」を入力すると、40枚デッキにおいて、(モンスター、魔法罠)の比率が(3,2)になるような確率が最も大きくなるデッキ構築が計算されます。<br>
+        この場合では、デッキに入れるべきモンスターの数は24枚になります。<br>
+        さらに、モンスターを24枚デッキにいれたときに、(モンスター、魔法罠)の比率がそれぞれ(0,5),(1,4),(2,3),(3,2),(4,1),(5,0)になる確率も実際に確認できます。
+    </div>
+
+    <h2>入力フォーム</h2>
     <form id="sumForm">
         <label for="n">デッキ枚数：</label>
         <input type="number" id="n" required><br>
@@ -78,6 +34,7 @@
     </form>
 
     <pre id="result"></pre>
+    <pre id="probs"></pre>
 
     <h1>数値の比較棒グラフ</h1>
     <canvas id="barChart" width="600" height="200"></canvas>
@@ -125,7 +82,7 @@
             for (let i = 0; i < list.length; i++) {
                 ctx.fillStyle = 'white';
                 ctx.fillRect(startX + (barWidth + barMargin) * i, startY - list[i] / maxValue * chartHeight, barWidth, list[i] / maxValue * chartHeight);
-                ctx.fillText('(' + i + ', ' + (list.length - i) + ')', startX + (barWidth + barMargin) * i + barWidth / 2, startY + 15);
+                ctx.fillText('(' + i + ', ' + (list.length - i - 1) + ')', startX + (barWidth + barMargin) * i + barWidth / 2, startY + 15);
             }
         }
 
@@ -136,10 +93,17 @@
             const n = parseInt(document.getElementById('n').value);
             const m = parseInt(document.getElementById('m').value);
 
-            best_m = find_best_balance_of_deck(n, m)
+            best_m = find_best_balance_of_deck(n, m);
+            const list = get_list_of_hands_prob(n, best_m)
 
             // 結果の表示
-            document.getElementById('result').innerText = "デッキ内に入れるべきモンスターの数：" + best_m
+            document.getElementById('result').innerText = "デッキ内に入れるべきモンスターの数：" + best_m;
+
+            probs = ""
+            for (let i = 0; i < list.length; i++) {
+                probs = probs + "(モンスター:魔法罠)=(" + i + "," + (5 - i) + ") : " + Math.round(list[i] * 100) / 100 + "%\n";
+            }
+            document.getElementById('probs').innerText = probs
 
             drawBarChart(n, best_m);
         }
