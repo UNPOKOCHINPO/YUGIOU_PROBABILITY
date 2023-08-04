@@ -8,18 +8,16 @@
 </head>
 
 <body>
-    <h1>手札のバランスに最適なデッキバランスを取得</h1>
+    <h1>デッキ構築から各手札パターンの確率を算出</h1>
     <h2>このページでできること</h2>
     <div class="text-box">
         遊戯王のデッキ構築において、手札に来るモンスターと魔法罠の比率は重要です。例えば、魔弾デッキであれば、モンスター1枚か2枚、残りは妨害系の魔法罠を引くことが望ましいでしょう。<br>
         要するに初手5枚で、(モンスター, 魔法罠)=(1, 4)のような手札になって欲しいわけです。
         <br>
-        このページでは、欲しい手札を入力すると、モンスターを何枚デッキに入れれば良いか自動で算出し、最適なデッキ構築を教えてくれます。<br>
-        それだけでなく、最適なデッキ構築にしたときに、全パターンの手札の確率も算出できるようにしました。
+        このページでは、デッキ内のモンスター数を入力すると、各手札パターンの確率を出力します。<br>
         <br><br>
-        例えば、以下の入力フォームに, 「40, 3」を入力すると、40枚デッキにおいて、(モンスター、魔法罠)の比率が(3,2)になるような確率が最も大きくなるデッキ構築が計算されます。<br>
-        この場合では、デッキに入れるべきモンスターの数は24枚になります。<br>
-        さらに、モンスターを24枚デッキにいれたときに、(モンスター、魔法罠)の比率がそれぞれ(0,5),(1,4),(2,3),(3,2),(4,1),(5,0)になる確率も実際に確認できます。
+        例えば、以下の入力フォームに,「40,12」を入力すると、40枚デッキにおいて、モンスターを12枚デッキにいれたときに
+        (モンスター、魔法罠)の比率がそれぞれ(0,5),(1,4),(2,3),(3,2),(4,1),(5,0)になる確率を確認できます。
     </div>
 
     <h2>入力フォーム</h2>
@@ -28,7 +26,7 @@
         <input type="number" id="n" value="40" min="40" max="60" required><br>
 
         <label for="m">引きたいモンスターの枚数：</label>
-        <input type="number" id="m" value="3" min="0" max="5" required><br>
+        <input type="number" id="m" value="12" min="0" max="60" required><br>
 
 
         <input type="button" value="計算" id="button" onclick="calculate()">
@@ -37,7 +35,6 @@
     <script type="text/javascript" src="../error.js"></script>
     <div id="errorContainer" style="color: red;"></div>
 
-    <pre id="result"></pre>
     <pre id="probs"></pre>
 
     <h2>数値の比較棒グラフ</h2>
@@ -47,7 +44,7 @@
     動画は<a ref="https://youtu.be/PO0dcobfUTI">https://youtu.be/PO0dcobfUTI</a>から見れます！
 
 
-    <script type="text/javascript" src="balance.js"></script>
+    <script type="text/javascript" src="balance2.js"></script>
     <script>
         function drawBarChart(n, best_m) {
             const list = get_list_of_hands_prob(n, best_m)
@@ -77,7 +74,7 @@
 
                 // Draw y-axis labels on the left
                 const value = i * 0.1;
-                ctx.textAlign = "center"; // テキストを右寄せに
+                ctx.textAlign = "center";
                 ctx.fillStyle = '#fff'; // テキストを白色に
                 ctx.fillText(value.toFixed(1), startX - 10, y + 5);
             }
@@ -101,11 +98,7 @@
             const n = parseInt(document.getElementById('n').value);
             const m = parseInt(document.getElementById('m').value);
 
-            best_m = find_best_balance_of_deck(n, m);
-            const list = get_list_of_hands_prob(n, best_m)
-
-            // 結果の表示
-            document.getElementById('result').innerText = "デッキ内に入れるべきモンスターの数：" + best_m;
+            const list = get_list_of_hands_prob(n, m)
 
             probs = ""
             for (let i = 0; i < list.length; i++) {
@@ -113,7 +106,7 @@
             }
             document.getElementById('probs').innerText = probs
 
-            drawBarChart(n, best_m);
+            drawBarChart(n, m);
         }
     </script>
 </body>
