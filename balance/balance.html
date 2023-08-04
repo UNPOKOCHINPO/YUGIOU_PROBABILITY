@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Best Balance</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            border: 1px solid #888;
+            background-color: #333;
+            color: #fff;
+        }
+
+        input[type="button"] {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        pre {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        #canvasContainer {
+            overflow: auto;
+            width: 420px;
+            /* Canvasの幅+20px(軸の終点の余白) */
+            height: 220px;
+            /* Canvasの高さ+20px(軸の終点の余白) */
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>手札のバランスに最適なデッキバランスを取得</h1>
+    <form id="sumForm">
+        <label for="n">デッキ枚数：</label>
+        <input type="number" id="n" required><br>
+
+        <label for="m">引きたいモンスターの枚数：</label>
+        <input type="number" id="m" required><br>
+
+
+        <input type="button" value="計算" onclick="calculateAndDisplaySum()">
+    </form>
+
+    <pre id="result"></pre>
+
+    <h1>数値の比較棒グラフ</h1>
+    <canvas id="barChart" width="600" height="200"></canvas>
+
+    <script type="text/javascript" src="balance.js"></script>
+    <script>
+        function drawBarChart(n, best_m) {
+            const list = get_list_of_hands_prob(n, best_m)
+
+            // グラフの描画
+            const canvas = document.getElementById('barChart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const maxValue = 100; // 縦軸の最大値を1に設定
+            const barWidth = 60;
+            const barMargin = 20;
+            const chartHeight = canvas.height - 40;
+            const chartWidth = barWidth * (list.length) + barMargin * (list.length - 1);
+            const startX = (canvas.width - chartWidth) / 2;
+            const startY = canvas.height - 20;
+
+
+            // Draw y-axis grid lines and labels
+            ctx.beginPath();
+            const gridCount = 10;
+            const gridGap = chartHeight / gridCount;
+            for (let i = 0; i <= gridCount; i++) {
+                const y = startY - i * gridGap;
+                ctx.moveTo(startX, y);
+                ctx.lineTo(canvas.width - startX, y);
+
+                // Draw y-axis labels on the left
+                const value = i * 0.1;
+                ctx.textAlign = "center"; // テキストを右寄せに
+                ctx.fillStyle = '#fff'; // テキストを白色に
+                ctx.fillText(value.toFixed(1), startX - 10, y + 5);
+            }
+
+            ctx.strokeStyle = '#666';
+            ctx.stroke();
+
+
+            // Draw goyoku bar
+            for (let i = 0; i < list.length; i++) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(startX + (barWidth + barMargin) * i, startY - list[i] / maxValue * chartHeight, barWidth, list[i] / maxValue * chartHeight);
+                ctx.fillText('(' + i + ', ' + (list.length - i) + ')', startX + (barWidth + barMargin) * i + barWidth / 2, startY + 15);
+            }
+        }
+
+    </script>
+
+    <script>
+        function calculateAndDisplaySum() {
+            const n = parseInt(document.getElementById('n').value);
+            const m = parseInt(document.getElementById('m').value);
+
+            best_m = find_best_balance_of_deck(n, m)
+
+            // 結果の表示
+            document.getElementById('result').innerText = "デッキ内に入れるべきモンスターの数：" + best_m
+
+            drawBarChart(n, best_m);
+        }
+    </script>
+</body>
+
+</html>
