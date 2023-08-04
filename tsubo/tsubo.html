@@ -48,6 +48,19 @@
             margin-top: 20px;
             white-space: pre-wrap;
         }
+
+        #canvasContainer {
+            overflow: auto;
+            width: 420px;
+            /* Canvasの幅+20px(軸の終点の余白) */
+            height: 220px;
+            /* Canvasの高さ+20px(軸の終点の余白) */
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+        }
     </style>
 </head>
 
@@ -60,28 +73,106 @@
         <label for="m">引きたい札の枚数：</label>
         <input type="number" id="m" required><br>
 
+        <label for="k">デッキ内の壺の数：</label>
+        <input type="number" id="k" required><br>
+
         <input type="button" value="計算" onclick="calculateAndDisplaySum()">
     </form>
 
     <pre id="result"></pre>
 
+    <h1>数値の比較棒グラフ</h1>
+    <canvas id="barChart" width="500" height="200"></canvas>
+
     <script type="text/javascript" src="tsubo.js"></script>
+    <script>
+        function drawBarChart() {
+            const n = parseInt(document.getElementById('n').value);
+            const m = parseInt(document.getElementById('m').value);
+            const k = parseInt(document.getElementById('k').value);
+
+            // tsubo.jsの関数を呼び出し
+            const goyoku = goyoku_draw(n, m, k);
+            const godon = godon_draw(n, m, k);
+            const kinken = kinken_draw(n, m, k);
+            const gokin = gokin_draw(n, m, k);
+
+            // グラフの描画
+            const canvas = document.getElementById('barChart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const maxValue = 1; // 縦軸の最大値を1に設定
+            const barWidth = 80;
+            const barMargin = 30;
+            const chartHeight = canvas.height - 40;
+            const chartWidth = barWidth * 4 + barMargin * 3;
+            const startX = (canvas.width - chartWidth) / 2;
+            const startY = canvas.height - 20;
+
+
+            // Draw y-axis grid lines and labels
+            ctx.beginPath();
+            const gridCount = 10;
+            const gridGap = chartHeight / gridCount;
+            for (let i = 0; i <= gridCount; i++) {
+                const y = startY - i * gridGap;
+                ctx.moveTo(startX, y);
+                ctx.lineTo(canvas.width - startX, y);
+
+                // Draw y-axis labels on the left
+                const value = i * 0.1;
+                ctx.textAlign = "right"; // テキストを右寄せに
+                ctx.fillStyle = '#fff'; // テキストを白色に
+                ctx.fillText(value.toFixed(1), startX - 10, y + 5);
+            }
+
+            ctx.strokeStyle = '#666';
+            ctx.stroke();
+
+
+            // Draw goyoku bar
+            ctx.fillStyle = 'white';
+            ctx.fillRect(startX, startY - goyoku / maxValue * chartHeight, barWidth, goyoku / maxValue * chartHeight);
+            ctx.fillText("goyoku", startX + barWidth / 2, startY + 15);
+
+            // Draw godon bar
+            ctx.fillStyle = 'white';
+            ctx.fillRect(startX + barWidth + barMargin, startY - godon / maxValue * chartHeight, barWidth, godon / maxValue * chartHeight);
+            ctx.fillText("godon", startX + barWidth + barMargin + barWidth / 2, startY + 15);
+
+            // Draw kinken bar
+            ctx.fillStyle = 'white';
+            ctx.fillRect(startX + (barWidth + barMargin) * 2, startY - kinken / maxValue * chartHeight, barWidth, kinken / maxValue * chartHeight);
+            ctx.fillText("kinken", startX + (barWidth + barMargin) * 2 + barWidth / 2, startY + 15);
+
+            // Draw gokin bar
+            ctx.fillStyle = 'white';
+            ctx.fillRect(startX + (barWidth + barMargin) * 3, startY - gokin / maxValue * chartHeight, barWidth, gokin / maxValue * chartHeight);
+            ctx.fillText("gokin", startX + (barWidth + barMargin) * 3 + barWidth / 2, startY + 15);
+        }
+
+    </script>
+
     <script>
         function calculateAndDisplaySum() {
             const n = parseInt(document.getElementById('n').value);
             const m = parseInt(document.getElementById('m').value);
+            const k = parseInt(document.getElementById('k').value);
 
             // tsubo.jsの関数を呼び出し
-            const goyoku = goyoku_draw(n, m);
-            const godon = godon_draw(n, m);
-            const kinken = kinken_draw(n, m);
-            const gokin = gokin_draw(n, m);
+            const goyoku = goyoku_draw(n, m, k);
+            const godon = godon_draw(n, m, k);
+            const kinken = kinken_draw(n, m, k);
+            const gokin = gokin_draw(n, m, k);
 
             // 結果の表示
             document.getElementById('result').innerText = "強欲な壺：" + goyoku
                 + "\n強欲で貪欲な壺：" + godon
                 + "\n金満で謙虚な壺：" + kinken
                 + "\n強欲で金満な壺：" + gokin;
+
+            drawBarChart();
         }
     </script>
 </body>
