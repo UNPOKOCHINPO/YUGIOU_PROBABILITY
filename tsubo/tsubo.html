@@ -20,16 +20,19 @@
     <h2>入力フォーム</h2>
     <form id="sumForm">
         <label for="n">デッキ枚数：</label>
-        <input type="number" id="n" required><br>
+        <input type="number" id="n" value="40" min="40" max="60" required><br>
 
         <label for="m">引きたい札の枚数：</label>
-        <input type="number" id="m" required><br>
+        <input type="number" id="m" value="3" min="0" max="60" required><br>
 
         <label for="k">デッキ内の壺の数：</label>
-        <input type="number" id="k" required><br>
+        <input type="number" id="k" value="2" min="0" max="3" required><br>
 
-        <input type="button" value="計算" onclick="calculateAndDisplaySum()">
+        <input type="button" id="button" value="計算" onclick="calculate()">
     </form>
+
+    <script type="text/javascript" src="../error.js"></script>
+    <div id="errorContainer" style="color: red;"></div>
     (※)1枚初動を引く確率を算出しています.
 
     <pre id="result"></pre>
@@ -108,7 +111,7 @@
     </script>
 
     <script>
-        function calculateAndDisplaySum() {
+        function calculate() {
             const n = parseInt(document.getElementById('n').value);
             const m = parseInt(document.getElementById('m').value);
             const k = parseInt(document.getElementById('k').value);

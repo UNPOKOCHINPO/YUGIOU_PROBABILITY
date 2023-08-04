@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calculate Prob Of BF</title>
+    <link rel="stylesheet" href="../calc_page_css.css">
+</head>
+
+<body>
+    <h1>ブラックフェザーで強い手札になる確率計算</h1>
+    <h2>このページでできること</h2>
+    <div class="text-box">
+        ブラックフェザーデッキにおいて、
+        (シムーン、他のBFモンスター)、(スズリ、黒い旋風)の手札が初動にある場合の先行制圧力には目を見張るモノがあります。<br>
+        ここでは、あなたのBFデッキ構築を入力することで、この強い2つの手札を引ける確率を算出可能です。
+    </div>
+    <h2>入力フォーム</h2>
+    <form id="sumForm">
+        <label for="n">デッキ枚数：</label>
+        <input type="number" id="n" value="40" min="40" max="60" required><br>
+
+        <label for="bfm">ブラックフェザーモンスターの合計枚数：</label>
+        <input type="number" id="bfm" value="17" min="0" max="60" required><br>
+
+        <label for="smnum">スモールワールドの数：</label>
+        <input type="number" id="smnum" value="2" min="0" max="3" required><br>
+
+        <label for="radnum">多次元壊獣ラディアンの数：</label>
+        <input type="number" id="radnum" value="1" min="0" max="3" required><br>
+
+        <input type="button" value="計算" id="button" onclick="calculate()">
+    </form>
+
+    <script type="text/javascript" src="../error.js"></script>
+    <div id="errorContainer" style="color: red;"></div>
+
+
+    <pre id="result"></pre>
+
+
+    <h2>注意点！</h2>
+    <div class="text-box">
+        ここで出力される値はランダムな実行に基づく実験値です。
+        また、以下の前提の元で計算しています。<br><br>
+        ・シムーン3積み<br>
+        ・スズリ3積み<br>
+        ・黒い旋風3積み<br>
+    </div>
+
+
+    <script type="text/javascript" src="bf.js"></script>
+
+    <script>
+
+        function calculate() {
+            const n = parseInt(document.getElementById('n').value);
+            const bfm = parseInt(document.getElementById('bfm').value);
+            const smnum = parseInt(document.getElementById('smnum').value);
+            const radnum = parseInt(document.getElementById('radnum').value);
+
+
+            const prob = calcSmallWorldProb(10000, n, bfm, smnum, radnum, 5);
+
+            // 結果の表示
+            document.getElementById('result').innerText = "強い手札になる確率：" + prob + '%';
+
+            drawBarChart();
+        }
+    </script>
+</body>
+
+
+
+
+
+
+
+</html>
