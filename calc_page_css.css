@@ -2,6 +2,7 @@ body {
     background-color: #111;
     color: #fff;
     font-family: 'Courier New', monospace;
+    margin: 1%;
 }
 
 form {
@@ -59,4 +60,9 @@ canvas {
 
 a {
     color: #00c0c0;
+}
+
+.emphasized-text {
+    color: #007bff;
+    font-size: 20px;
 }
