@@ -15,7 +15,7 @@ function find_best_balance_of_deck(n, m_want) {
     let best_m_in_deck = 0;
     let best_draw_counter = 0;
 
-    for (let m_in_deck = 0; m_in_deck < n; m_in_deck++) {
+    for (let m_in_deck = 0; m_in_deck <= n; m_in_deck++) {
         const success_prob = p(n, m_in_deck, m_want);
 
         if (best_draw_counter < success_prob) {
