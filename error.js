@@ -9,6 +9,7 @@ function validateNumber() {
     let hasError = false;
 
     deck_num = -1;
+    sum_of_others = 0;
 
     inputs.forEach(input => {
         const inputValue = parseInt(input.value);
@@ -20,6 +21,7 @@ function validateNumber() {
             if (deck_num < inputValue) {
                 hasError = true;
             }
+            sum_of_others += inputValue;
         }
 
         if (isNaN(inputValue) || inputValue < min || inputValue > max) {
@@ -30,6 +32,9 @@ function validateNumber() {
         }
     });
 
+    if (sum_of_others > deck_num) {
+        hasError = true;
+    }
 
     if (hasError) {
         errorContainer.textContent = "遊戯王のルールを満たさないよ！";
