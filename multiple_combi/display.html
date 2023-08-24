@@ -23,22 +23,19 @@
     <h2>入力フォーム</h2>
     <form id="sumForm">
         <label for="n">デッキ枚数：</label>
-        <input type="number" id="n" value="40" min="40" max="60" required><br>
+        <input type="number" id="n" value="40" min="40" max="60" required><br><br>
 
         <label for="m">1枚初動の枚数：</label>
-        <input type="number" id="one" value="9" min="0" max="60" required><br>
+        <input type="number" id="one" value="9" min="0" max="60" required><br><br>
 
         <label for="m">2枚初動の枚数：</label>
-        <input type="number" id="two1" value="3" min="0" max="60" required><br>
-        <label for="m">2枚初動の枚数：</label>
-        <input type="number" id="two2" value="3" min="0" max="60" required><br>
+        1種類目 <input type="number" id="two1" value="3" min="0" max="60" required>
+        2種類目 <input type="number" id="two2" value="3" min="0" max="60" required><br><br>
 
         <label for="m">3枚初動の枚数：</label>
-        <input type="number" id="three1" value="0" min="0" max="60" required><br>
-        <label for="m">3枚初動の枚数：</label>
-        <input type="number" id="three2" value="0" min="0" max="60" required><br>
-        <label for="m">3枚初動の枚数：</label>
-        <input type="number" id="three3" value="0" min="0" max="60" required><br>
+        1種類目 <input type="number" id="three1" value="0" min="0" max="60" required>
+        2種類目 <input type="number" id="three2" value="0" min="0" max="60" required>
+        3種類目 <input type="number" id="three3" value="0" min="0" max="60" required><br><br>
         <input type="button" id="button" value="計算" onclick="calculate()">
     </form>
 
