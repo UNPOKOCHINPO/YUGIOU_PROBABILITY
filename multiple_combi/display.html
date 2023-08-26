@@ -18,7 +18,7 @@
         <br>
         この時、<br>1.「レベル1モンスター1枚」,
         <br>2.「レベル2と3のモンスター1枚ずつ」，<br>3.「レベル4,5,6のモンスター1枚ずつ」<br>のいずれかの組み合わせが手札に来る確率を計算できます。
-            
+
     </div>
 
     <h2>入力フォーム</h2>
@@ -37,6 +37,17 @@
         1種類目 <input type="number" id="three1" value="0" min="0" max="60" required>
         2種類目 <input type="number" id="three2" value="0" min="0" max="60" required>
         3種類目 <input type="number" id="three3" value="0" min="0" max="60" required><br><br>
+
+        <br>
+        <div class="emphasized-text">おまけ</div><br>
+        引きたくない事故札の枚数：<br>
+        1種類目 <input type="number" id="ng1" value="0" min="0" max="3" required>
+        2種類目 <input type="number" id="ng2" value="0" min="0" max="3" required>
+        3種類目 <input type="number" id="ng3" value="0" min="0" max="3" required><br><br>
+        <div class="emphasized-text">
+            ※例えば、「幻獣機オライオン」や「ジェット・シンクロン」などデッキからリクルートしたり墓地に落としたりしたいカードの枚数を入れてください。各種の事故札が手札にすべてそろった場合に事故とみなします。
+        </div><br><br>
+
         <input type="button" id="button" value="計算" onclick="calculate()">
     </form>
 
@@ -62,12 +73,15 @@
             const three1 = parseInt(document.getElementById('three1').value);
             const three2 = parseInt(document.getElementById('three2').value);
             const three3 = parseInt(document.getElementById('three3').value);
+            const ng1 = parseInt(document.getElementById('ng1').value);
+            const ng2 = parseInt(document.getElementById('ng2').value);
+            const ng3 = parseInt(document.getElementById('ng3').value);
 
             // tsubo.jsの関数を呼び出し
-            res = calcProb(100000, n, one, two1, two2, three1, three2, three3, 5);
+            res = calcProb(100000, n, one, two1, two2, three1, three2, three3, ng1, ng2, ng3, 5);
 
             // 結果の表示
-            document.getElementById('result').innerText = "結果：" + res + '%';
+            document.getElementById('result').innerText = "事故にならずに初動が来る確率：" + res + '%';
         }
     </script>
 </body>

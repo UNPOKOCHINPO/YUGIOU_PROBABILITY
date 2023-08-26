@@ -67,7 +67,20 @@ function want_combi_of_3cards(a_s, b_s, c_s, hands, dontwant = []) {
     return false;
 }
 
-function calcProb(drawnum = 100000, n = 40, one = 9, two1 = 3, two2 = 4, three1 = 3, three2 = 3, three3 = 3, hdnum = 5) {
+function draw_all_butcards(x_s, hands) {
+    let bool = true;
+    if (x_s.length === 0) {
+        return false;
+    }
+    for (let x of x_s) {
+        if (!hands.includes(x)) {
+            bool = false;
+        }
+    }
+    return bool
+}
+
+function calcProb(drawnum = 100000, n = 40, one = 9, two1 = 3, two2 = 4, three1 = 3, three2 = 3, three3 = 3, ng1 = 0, ng2 = 0, ng3 = 0, hdnum = 5) {
     const deck = [...Array(n).keys()]; // Deck of cards numbered
     const one_list = [...Array(one).keys()]; // 1-card starters
 
@@ -81,6 +94,12 @@ function calcProb(drawnum = 100000, n = 40, one = 9, two1 = 3, two2 = 4, three1 
     const three3_list = [...Array(three3).keys()].map(i => i + one + two + three1 + three2);
 
     const three = three1 + three2 + three3;
+
+    const ng1_list = [...Array(ng1).keys()].map(i => i + one + two + three);
+    const ng2_list = [...Array(ng2).keys()].map(i => i + one + two + three + ng1);
+    const ng3_list = [...Array(ng3).keys()].map(i => i + one + two + three + ng1 + ng2);
+
+    const ng = ng1 + ng2 + ng3;
 
     let cnt = 0;
     for (let _ = 0; _ < drawnum; _++) {
@@ -102,6 +121,17 @@ function calcProb(drawnum = 100000, n = 40, one = 9, two1 = 3, two2 = 4, three1 
         if (want_combi_of_3cards(three1_list, three2_list, three3_list, hands)) {
             ok = true;
         }
+
+        if (draw_all_butcards(ng1_list, hands)) {
+            ok = false;
+        }
+        if (draw_all_butcards(ng2_list, hands)) {
+            ok = false;
+        }
+        if (draw_all_butcards(ng3_list, hands)) {
+            ok = false;
+        }
+
         if (ok) {
             cnt++;
         }
