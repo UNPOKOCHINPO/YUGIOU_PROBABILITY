@@ -92,11 +92,11 @@
             const m3_ = parseInt(document.getElementById('m3_').value);
 
 
-            result = ""
+            result = "";
 
-            result = result + calc(n, m1, m2, m3, chosen, m1_, m2_, m3_)
+            result = '欲しい手札になる確率：' + result + calc(n, m1, m2, m3, chosen, m1_, m2_, m3_) + '%';
 
-            document.getElementById('probs').innerText = result
+            document.getElementById('probs').innerText = result;
 
         }
         function updateErrorStatus() {
