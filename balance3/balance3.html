@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Best Balance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../calc_page_css.css">
+</head>
+
+<body>
+    <h1>誘発や初動などの手札バランスの確率計算（先攻・後攻いずれも対応）</h1>
+    <h2>このページでできること</h2>
+    <div class="text-box">
+        あなたのデッキ構築（展開札・初動札・誘発ケアの札）と、あなたが欲しい札の最低枚数を入力すると
+        「あなたが欲しい札」になる確率が表示されます。<br>
+        例えば、展開札・エフェクトヴェーラー・墓穴の指名者、それぞれが最低１枚手札に来てほしい場合、
+        あなたのデッキ構築を入力後、欲しい手札の欄に1,1,1を入力すれば確率を計算可能です。<br>
+        先攻・後攻もボタンで選択できます。10000回ドローの実験値です。
+    </div>
+
+    <h2>入力フォーム</h2>
+    <form id="sumForm">
+        <input type="radio" name="opts" id="first" checked> 先攻
+        <input type="radio" name="opts" id="second"> 後攻<br><br>
+
+        デッキ枚数：
+        <input type="number" id="n" value="40" min="40" max="60" required><br><br>
+
+        <div>
+            <div class="emphasized-text">デッキ構築について</div><br>
+            デッキ内の展開札の枚数：
+            <input type="number" id="m1" value="12" min="0" max="60" required>
+
+            デッキ内の手札誘発の枚数：
+            <input type="number" id="m2" value="9" min="0" max="60" required>
+
+            デッキ内の誘発ケア札の枚数：
+            <input type="number" id="m3" value="6" min="0" max="60" required><br><br><br>
+
+            <div class="emphasized-text">欲しい手札について</div><br>
+            引きたいの展開札の枚数：
+            <input type="number" id="m1_" value="1" min="0" max="6" required>
+
+            引きたい手札誘発の枚数：
+            <input type="number" id="m2_" value="1" min="0" max="6" required>
+
+            引きたい誘発ケア札の枚数：
+            <input type="number" id="m3_" value="1" min="0" max="6" required><br><br><br>
+
+            <input type="button" value="計算" id="button" onclick="calculate()">
+    </form>
+
+    <div id="errorText" style="color: red;"></div>
+
+    <div class="emphasized-text" id="probs"></div>
+    </pre>
+
+    <h2>解説動画</h2>
+    動画はまだ無い！
+
+
+    <script type="text/javascript" src="balance3.js"></script>
+    <script>
+        const option1Button = document.getElementById('first');
+        const option2Button = document.getElementById('second');
+        let chosen = 'first';
+        option1Button.addEventListener('click', () => {
+            chosen = 'first';
+        });
+        option2Button.addEventListener('click', () => {
+            chosen = 'second';
+        });
+        n.addEventListener('input', updateErrorStatus);
+        m1.addEventListener('input', updateErrorStatus);
+        m2.addEventListener('input', updateErrorStatus);
+        m3.addEventListener('input', updateErrorStatus);
+        m1_.addEventListener('input', updateErrorStatus);
+        m2_.addEventListener('input', updateErrorStatus);
+        m3_.addEventListener('input', updateErrorStatus);
+        option1Button.addEventListener('input', updateErrorStatus);
+        option2Button.addEventListener('input', updateErrorStatus);
+        chosen.addEventListener('input', updateErrorStatus);
+
+
+        function calculate() {
+            const n = parseInt(document.getElementById('n').value);
+            const m1 = parseInt(document.getElementById('m1').value);
+            const m2 = parseInt(document.getElementById('m2').value);
+            const m3 = parseInt(document.getElementById('m3').value);
+            const m1_ = parseInt(document.getElementById('m1_').value);
+            const m2_ = parseInt(document.getElementById('m2_').value);
+            const m3_ = parseInt(document.getElementById('m3_').value);
+
+
+            result = ""
+
+            result = result + calc(n, m1, m2, m3, chosen, m1_, m2_, m3_)
+
+            document.getElementById('probs').innerText = result
+
+        }
+        function updateErrorStatus() {
+            const val1 = parseFloat(n.value);
+            const val2 = parseFloat(m1.value);
+            const val3 = parseFloat(m2.value);
+            const val4 = parseFloat(m3.value);
+            const val5 = parseFloat(m1_.value);
+            const val6 = parseFloat(m2_.value);
+            const val7 = parseFloat(m3_.value);
+
+            if (val2 + val3 + val4 <= val1 && ((val5 + val6 + val7 <= 5 && chosen == 'first') || (val5 + val6 + val7 <= 6 && chosen == 'second'))) {
+                errorText.textContent = '';
+                document.getElementById("button").style.display = 'block';
+            } else {
+                errorText.textContent = '遊戯王のルールを満たさないよ！';
+                document.getElementById("button").style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
