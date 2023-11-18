@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>Poker Prob</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../calc_page_css.css">
+</head>
+
+<body>
+    <h1>ポーカーの確率に関しての計算ページ</h1>
+    <h2>このページでできること</h2>
+    <div class="text-box">
+        デッキ構築を入力するとポーカーの役が成立する確率を出力します。
+
+    </div>
+
+    <h2>入力フォーム</h2>
+    <form id="sumForm">
+        <label for="n1">1枚入れるカードの種類：</label>
+        <input type="number" id="n1" value="4" min="0" max="60" required><br><br>
+
+        <label for="n2">2枚入れるカードの種類：</label>
+        <input type="number" id="n2" value="3" min="0" max="30" required><br><br>
+
+        <label for="n3">3枚入れるカードの種類：</label>
+        <input type="number" id="n3" value="10" min="0" max="20" required><br><br>
+
+        <br>
+
+        <input type="button" id="button" value="計算" onclick="calculate()">
+    </form>
+
+    <script type="text/javascript" src="./error.js"></script>
+    <div id="errorContainer" style="color: red;"></div>
+
+    <div class="emphasized-text">
+        <pre id="result"></pre>
+    </div>
+
+    <h2>数値の比較棒グラフ</h2>
+    <canvas id="barChart" width="500" height="300"></canvas>
+
+    <script>
+    function drawBarChart(res) {
+        // グラフの描画
+        const canvas = document.getElementById('barChart');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        
+        const maxValue = 100;
+        const barWidth = 50;
+        const barMargin = 20;
+        const chartHeight = canvas.height - 80;
+        const chartWidth = barWidth * 5 + barMargin * 4;
+        const startX = (canvas.width - chartWidth) / 2;
+        const startY = canvas.height - 50;
+        
+
+        // Draw y-axis grid lines and labels
+        ctx.beginPath();
+        const gridCount = 10;
+        const gridGap = chartHeight / gridCount;
+        for (let i = 0; i <= gridCount; i++) {
+            const y = startY - i * gridGap;
+            ctx.moveTo(startX, y);
+            ctx.lineTo(canvas.width - startX, y);
+
+            // Draw y-axis labels on the left
+            const value = i * 10;
+            ctx.textAlign = "right";
+            ctx.fillStyle = '#fff';
+            ctx.fillText(value.toFixed(1), startX - 10, y + 5);
+        }
+
+        ctx.strokeStyle = '#666';
+        ctx.stroke();
+
+        let names = ["no_pair", "one_pair", "two_pair", "three_cards","full_house"];
+        
+        for (let i = 0; i < names.length; i++) {
+            const resi = res[i]; // データを取得
+            ctx.fillStyle = 'white';
+            ctx.fillRect(startX + (barWidth + barMargin) * i, startY - resi * chartHeight/maxValue, barWidth, resi * chartHeight/maxValue);
+
+            const text = names[i];
+            const textX = startX + (barWidth + barMargin) * i + barWidth / 2;
+            const textY = startY + 15;
+
+            // 文字列を斜めに描画
+            const angle = Math.PI / 15; // 45度の角度（時計回りに回転）
+            ctx.save();
+            ctx.translate(textX+15, textY+10);
+            ctx.rotate(angle);
+            ctx.fillText(text, 0, 0);
+            ctx.restore();
+        }
+    }
+    </script>
+
+
+
+
+    <h2>解説動画</h2>
+    動画は まだ作ってません！
+
+
+    <script type="text/javascript" src="calc.js"></script>
+    <script>
+        function calculate() {
+            const n1 = parseInt(document.getElementById('n1').value);
+            const n2 = parseInt(document.getElementById('n2').value);
+            const n3 = parseInt(document.getElementById('n3').value);
+
+            // tsubo.jsの関数を呼び出し
+            res = calcProb(n1, n2, n3, drawnum = 100000, hdnum = 5);
+
+            // 結果の表示
+            let names = ["ブタ　　　：", "１ペア　　：", "２ペア　　：", "３カード　：", "フルハウス："];
+            document.getElementById('result').innerText = "";
+            for (let i=0;i<names.length;i++){ document.getElementById('result').innerText += '\n'+names[i] + res[i] + '%';}
+
+            drawBarChart(res);
+        }
+    </script>
+</body>
+
+</html>
