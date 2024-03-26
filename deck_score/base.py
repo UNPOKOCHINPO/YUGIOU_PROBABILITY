@@ -115,7 +115,7 @@ def optimize_deck_Score(n, af_score_list, as_score_list, no_need_f,no_need_s,sho
     af_ng_list_shotage = [v for v in range(shotage_f+1)]
     as_ng_list_no_need = [v for v in range(no_need_s,6+1)]
     as_ng_list_shotage = [v for v in range(shotage_s+1)]
-
+    
     max_S = 0
     f_id_list = []
     s_id_list = []

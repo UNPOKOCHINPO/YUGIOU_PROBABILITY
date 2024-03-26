@@ -138,7 +138,7 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
                 fIdList = fList.slice(0, fId + 1).map(val => val[1]);
                 sIdList = sList.slice(0, sId + 1).map(val => val[1]);
 
-                console.log(`fid:${fId}, f:${f}, sid:${sId}, s:${s}, SMain:${SMain}, w1:${(afNgProbNoNeed)}`);
+                // console.log(`fid:${fId}, f:${f}, sid:${sId}, s:${s}, SMain:${SMain}, w1:${(afNgProbNoNeed)}`);
             }
         }
     }

@@ -166,7 +166,7 @@
             sList.forEach(sid => {
                 sNames.push(cardTypes2[sid]);
             });
-            console.log(deck_score);
+            //console.log(deck_score);
 
             generateTable(fNames, 'optimizedScores');
             generateTable(sNames, 'optimizedScores2');
@@ -184,7 +184,7 @@
 
         // Add event listener to calculate average score when score changes
         document.addEventListener('input', function (event) {
-            //calculateScore();
+            validateNumber();
         });
 
         // Function to generate card scoring inputs

@@ -1,9 +1,11 @@
-document.getElementById("sumForm").addEventListener("input", function () {
-    validateNumber();
-});
+
 function validateNumber() {
     const errorContainer = document.getElementById("errorContainer");
     const inputs = document.querySelectorAll("input[type='number']");
+    scores = document.querySelectorAll('.score');
+    scores2 = document.querySelectorAll('.score2');
+    num = document.querySelectorAll('.num');
+    num2 = document.querySelectorAll('.num2');
 
 
     let hasError = false;
@@ -19,16 +21,10 @@ function validateNumber() {
         hasError = true;
     }
 
-
-    inputs.forEach(input => {
-        const inputValue = parseInt(input.value);
-        const min = parseInt(input.getAttribute("min"));
-        const max = parseInt(input.getAttribute("max"));
-
-        if (isNaN(inputValue) || inputValue < min || inputValue > max) {
-            hasError = true;
-        }
-    });
+    if(flag(inputs) || flag(scores) || flag(scores2) || flag(num) || flag(num2)){
+        hasError = true;
+    }
+    
 
 
     if (hasError) {
@@ -38,4 +34,18 @@ function validateNumber() {
         errorContainer.textContent = "";
         document.getElementById("button").style.display = "block";
     }
+}
+
+function flag(inputs){
+    hasError = false;
+    inputs.forEach(input => {
+        const inputValue = parseInt(input.value);
+        const min = parseInt(input.getAttribute("min"));
+        const max = parseInt(input.getAttribute("max"));
+
+        if (isNaN(inputValue) || inputValue < min || inputValue > max) {
+            hasError = true;
+        }
+    });
+    return hasError;
 }
