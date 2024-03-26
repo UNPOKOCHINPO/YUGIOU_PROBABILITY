@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deck scoring</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <h1>デッキスコア計算</h1>
+
+    <button id="detailBtn" hidden>Detail Scoring</button>
+
+    <div id="meta_data">
+        デッキ枚数：<br>
+        <input type="number" id="deck_num" title="deck_num" value="40" min="40" max="60"><br>
+        引きたい手札誘発の枚数:<br>
+        <input type="number" id="yuhatsu_min" title="yuhatsu_min" value="1" min="0" max="5">～<input type="number"
+            id="yuhatsu_max" title="yuhatsu_max" value="2" min="0" max="5"><br>
+        引きたい後攻捲り札の枚数:<br>
+        <input type="number" id="makuri_min" title="makuri_min" value="1" min="0" max="5">～<input type="number"
+            id="makuri_max" title="makuri_max" value="1" min="0" max="5"><br>
+    </div><br>
+
+
+    <h2>手札誘発のスコア:</h2>
+    <table>
+        <tbody id="cardScores">
+            <!-- JavaScript will populate this table -->
+        </tbody>
+    </table>
+
+    <h2>後攻捲り札のスコア:</h2>
+    <table>
+        <tbody id="cardScores2">
+            <!-- JavaScript will populate this table -->
+        </tbody>
+    </table>
+    <br><br>
+    <button id="button" style="color: blue;">Press here to calculate score</button><br>
+    <div id="errorContainer" style="color: red;"></div>
+
+
+    <div id="yourScore" style="display: none;">
+        <h2>Your Deck Score:</h2>
+        <p id="yScore"></p>
+    </div><br><br>
+    <div id="averageScore" style="display: none;">
+        <h2>Optimized Score:</h2>
+        <p id="avgScore"></p>
+    </div><br><br>
+
+    <div style="display: flex;">
+        <table style="margin-right: 20px;">
+            <tbody id="optimizedScores">
+                <!-- JavaScript will populate this table -->
+            </tbody>
+        </table>
+        <table>
+            <tbody id="optimizedScores2">
+                <!-- JavaScript will populate this table -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="./calc.js"></script>
+    <script src="./error.js"></script>
+    <script>
+        const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影'];
+        const cardTypes2 = ['禁じられた一滴', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒'];
+        const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7]];
+        const defaultScores2 = [[4, 7], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6]];
+
+        // Function to calculate average score
+        function generateTable(listElements, tableName) {
+            const tblBody = document.getElementById(tableName);
+            tblBody.innerHTML = ''; // Clear previous inputs
+
+            // 要素名と要素数を格納するオブジェクト
+            const elementCounts = {};
+
+            // 要素数をカウント
+            for (const element of listElements) {
+                if (element in elementCounts) {
+                    elementCounts[element]++;
+                } else {
+                    elementCounts[element] = 1;
+                }
+            }
+
+            // <table> 要素と <tbody> 要素を作成
+            //const tbl = document.createElement("table");
+            //const tblBody = document.createElement("tbody");
+
+            // すべての要素を表に追加
+            for (const element in elementCounts) {
+                // 表の行を作成
+                const row = document.createElement("tr");
+
+                // <td> 要素とテキストノードを作成
+                const cellName = document.createElement("td");
+                const cellCount = document.createElement("td");
+
+                // テキストノードを設定
+                const cellNameText = document.createTextNode(element);
+                const cellCountText = document.createTextNode(elementCounts[element]);
+
+                // テキストノードを <td> の内容として追加
+                cellName.appendChild(cellNameText);
+                cellCount.appendChild(cellCountText);
+
+                // <td> を行に追加
+                row.appendChild(cellName);
+                row.appendChild(cellCount);
+
+                // 表の本体の末尾に行を追加
+                tblBody.appendChild(row);
+            }
+
+            // <tbody> を <table> の中に追加
+            //tbl.appendChild(tblBody);
+
+            // <table> を <body> の中に追加
+            //document.body.appendChild(tbl);
+
+            // 表のスタイルを設定
+            //tbl.setAttribute("border", "1");
+        }
+
+        function calculateScore() {
+            deck_num = parseInt(document.getElementById('deck_num').value);
+            yuhatsu_min = parseInt(document.getElementById('yuhatsu_min').value);
+            yuhatsu_max = parseInt(document.getElementById('yuhatsu_max').value);
+            makuri_min = parseInt(document.getElementById('makuri_min').value);
+            makuri_max = parseInt(document.getElementById('makuri_max').value);
+
+
+            scores = document.querySelectorAll('.score');
+            scores2 = document.querySelectorAll('.score2');
+            num = document.querySelectorAll('.num');
+            num2 = document.querySelectorAll('.num2');
+
+
+            const detailBtn = document.getElementById('detailBtn');
+            const detailMode = detailBtn.dataset.detailed === 'true';
+
+            //scores = transformScoreList(scores, num, !detailMode);
+            //scores2 = transformScoreList(scores2, num2, !detailMode);
+            num = transformNumList(num);
+            num2 = transformNumList(num2);
+
+            scores = transformScoreListForOptimization(scores, !detailMode);
+            scores2 = transformScoreListForOptimization(scores2, !detailMode);
+
+            // deck_score = deck_Score(40, scores, scores2, 4, 2, 0, 0);
+            let [fList, sList, deck_score] = optimizeDeckScore(deck_num, scores, scores2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);//yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
+            your_score = DeckScore(deck_num, scores, scores2, num, num2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
+
+            fNames = []
+            sNames = []
+            fList.forEach(fid => {
+                fNames.push(cardTypes[fid]);
+            });
+            sList.forEach(sid => {
+                sNames.push(cardTypes2[sid]);
+            });
+            console.log(deck_score);
+
+            generateTable(fNames, 'optimizedScores');
+            generateTable(sNames, 'optimizedScores2');
+
+
+
+
+            document.getElementById('avgScore').textContent = `Deck Score: ${deck_score}`;
+            document.getElementById('averageScore').style.display = 'block'; // Display average score if scores are entered
+
+            document.getElementById('yScore').textContent = `Deck Score: ${your_score}`;
+            document.getElementById('yourScore').style.display = 'block'; // Display average score if scores are entered
+
+        }
+
+        // Add event listener to calculate average score when score changes
+        document.addEventListener('input', function (event) {
+            //calculateScore();
+        });
+
+        // Function to generate card scoring inputs
+        function generateCardInputs(detailMode) {
+            const cardsContainer = document.getElementById('cardScores');
+            cardsContainer.innerHTML = ''; // Clear previous inputs
+
+
+            for (let i = 0; i < Math.floor((cardTypes.length + 2) / 3); i++) {
+                const rowContainer = document.createElement('tr');
+                for (let i2 = 0; i2 < 3; i2++) {
+
+                    const container = document.createElement('td');
+                    container.textContent = `${cardTypes[i * 3 + i2]}:`;
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.classList.add('num');
+                    input.min = 0;
+                    input.max = 3;
+                    input.value = 0;
+                    input.title = `input${i * 3 + i2}`;
+                    container.appendChild(input);
+
+
+
+                    for (let j = 1; j <= 2; j++) {
+                        const scoreContainer = document.createElement('div');
+                        for (let k = 1; k <= (detailMode ? 3 : 1); k++) {
+                            const label = document.createElement('label');
+                            label.textContent = `${j === 1 ? '先攻' : '後攻'}: `;
+                            const input = document.createElement('input');
+                            input.type = 'number';
+                            input.classList.add('score');
+                            input.min = 0;
+                            input.max = 10;
+                            input.value = 6;
+                            if (!detailMode) {
+                                input.value = defaultScores[3 * i + i2][j - 1];
+                            }
+
+                            scoreContainer.appendChild(label);
+                            scoreContainer.appendChild(input);
+                        }
+
+                        container.appendChild(scoreContainer);
+                    }
+                    rowContainer.appendChild(container);
+                    if (3 * i + i2 === cardTypes.length - 1) {
+                        break;
+                    }
+                }
+
+                cardsContainer.appendChild(rowContainer);
+            }
+
+
+            const cardsContainer2 = document.getElementById('cardScores2');
+            cardsContainer2.innerHTML = ''; // Clear previous inputs
+
+
+            for (let i = 0; i < Math.floor((cardTypes2.length + 2) / 3); i++) {
+                const rowContainer = document.createElement('tr');
+                for (let i2 = 0; i2 < 3; i2++) {
+                    if (3 * i + i2 >= cardTypes2.length) {
+                        break;
+                    }
+                    const container = document.createElement('td');
+                    container.textContent = `${cardTypes2[i * 3 + i2]}:`;
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.classList.add('num2');
+                    input.min = 0;
+                    input.max = 3;
+                    input.value = 0;
+
+                    input.title = `input2${i * 3 + i2}`;
+                    container.appendChild(input);
+
+
+
+                    for (let j = 1; j <= 2; j++) {
+                        const scoreContainer = document.createElement('div');
+                        for (let k = 1; k <= (detailMode ? 3 : 1); k++) {
+                            const label = document.createElement('label');
+                            label.textContent = `${j === 1 ? '先攻' : '後攻'}: `;
+                            const input = document.createElement('input');
+                            input.type = 'number';
+                            input.classList.add('score2');
+                            input.min = 0;
+                            input.max = 10;
+                            input.value = 6;
+                            if (!detailMode) {
+                                input.value = defaultScores2[3 * i + i2][j - 1];
+                            }
+
+                            scoreContainer.appendChild(label);
+                            scoreContainer.appendChild(input);
+                        }
+
+                        container.appendChild(scoreContainer);
+                    }
+                    rowContainer.appendChild(container);
+                }
+
+                cardsContainer2.appendChild(rowContainer);
+            }
+        }
+
+        // Function to handle detail scoring button click
+        document.getElementById('detailBtn').addEventListener('click', function () {
+            ///const detailBtn = document.getElementById('detailBtn');
+            ///const detailed = detailBtn.dataset.detailed === 'true';
+            //detailBtn.dataset.detailed = (!detailed).toString();
+            //detailBtn.textContent = detailed ? 'Detail Scoring' : 'Simple Scoring';
+            //generateCardInputs(!detailed); // Generate inputs for detail scoring
+            //calculateScore(); // Calculate average score for detail scoring
+        });
+        document.getElementById('button').addEventListener('click', function () {
+            calculateScore();
+        });
+        document.getElementById("meta_data").addEventListener("input", function () {
+            validateNumber();
+        });
+
+        // Call function to generate default card scoring inputs
+        generateCardInputs(false);
+    </script>
+
+</body>
+
+</html>
