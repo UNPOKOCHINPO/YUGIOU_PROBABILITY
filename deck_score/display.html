@@ -43,14 +43,15 @@
     <div id="errorContainer" style="color: red;"></div>
 
 
+    <h2>あなたのデッキスコア:</h2>
     <div id="yourScore" style="display: none;">
-        <h2>Your Deck Score:</h2>
         <p id="yScore"></p>
-    </div><br><br>
+    </div><br>
+
+    <h2>最適化された場合のデッキスコアとオススメ採用札:</h2>
     <div id="averageScore" style="display: none;">
-        <h2>Optimized Score:</h2>
         <p id="avgScore"></p>
-    </div><br><br>
+    </div><br>
 
     <div style="display: flex;">
         <table style="margin-right: 20px;">
@@ -63,17 +64,34 @@
                 <!-- JavaScript will populate this table -->
             </tbody>
         </table>
+    </div><br>
+
+    <h2>おまけ 各カードの確率反映スコア（上位から表示）:</h2>
+    <div style="display: flex;">
+        <table style="margin-right: 20px;">
+            <tbody id="sortedScores">
+                <!-- JavaScript will populate this table -->
+            </tbody>
+        </table>
+        <table>
+            <tbody id="sortedScores2">
+                <!-- JavaScript will populate this table -->
+            </tbody>
+        </table>
     </div>
+
+    
 
     <script src="./calc.js"></script>
     <script src="./error.js"></script>
     <script>
-        const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影'];
+        const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影', 'ニビル'];
         const cardTypes2 = ['禁じられた一滴', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒'];
-        const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7]];
+        const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7], [3, 9]];
         const defaultScores2 = [[4, 7], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6]];
+        const turn1 = [true,true,true,false,true,false,false,true];
+        const turn12 = [true,false,true,false,false,false];
 
-        // Function to calculate average score
         function generateTable(listElements, tableName) {
             const tblBody = document.getElementById(tableName);
             tblBody.innerHTML = ''; // Clear previous inputs
@@ -129,6 +147,38 @@
             //tbl.setAttribute("border", "1");
         }
 
+        
+        function generateSortedTable(listElements, scores, tableName) {
+            const tblBody = document.getElementById(tableName);
+            tblBody.innerHTML = '';
+            
+            // すべての要素を表に追加
+            for (let i=0; i<listElements.length;i++) {
+                // 表の行を作成
+                const row = document.createElement("tr");
+
+                // <td> 要素とテキストノードを作成
+                const cellName = document.createElement("td");
+                const cellCount = document.createElement("td");
+
+                // テキストノードを設定
+                const cellNameText = document.createTextNode(listElements[i]);
+                const cellCountText = document.createTextNode(scores[i]);
+
+                // テキストノードを <td> の内容として追加
+                cellName.appendChild(cellNameText);
+                cellCount.appendChild(cellCountText);
+
+                // <td> を行に追加
+                row.appendChild(cellName);
+                row.appendChild(cellCount);
+
+                // 表の本体の末尾に行を追加
+                tblBody.appendChild(row);
+            }
+        }
+
+
         function calculateScore() {
             deck_num = parseInt(document.getElementById('deck_num').value);
             yuhatsu_min = parseInt(document.getElementById('yuhatsu_min').value);
@@ -151,12 +201,15 @@
             num = transformNumList(num);
             num2 = transformNumList(num2);
 
-            scores = transformScoreListForOptimization(scores, !detailMode);
-            scores2 = transformScoreListForOptimization(scores2, !detailMode);
+            scores = transformScoreListForOptimization(scores, turn1, !detailMode);
+            scores2 = transformScoreListForOptimization(scores2, turn12, !detailMode);
+
 
             // deck_score = deck_Score(40, scores, scores2, 4, 2, 0, 0);
-            let [fList, sList, deck_score] = optimizeDeckScore(deck_num, scores, scores2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);//yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
+            let [fList, sList, fscore, sscore, deck_score] = optimizeDeckScore(deck_num, scores, scores2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);//yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
             your_score = DeckScore(deck_num, scores, scores2, num, num2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
+
+            console.log(fList);
 
             fNames = []
             sNames = []
@@ -171,7 +224,8 @@
             generateTable(fNames, 'optimizedScores');
             generateTable(sNames, 'optimizedScores2');
 
-
+            generateSortedTable(fNames, fscore, 'sortedScores');
+            generateSortedTable(sNames, sscore, 'sortedScores2');
 
 
             document.getElementById('avgScore').textContent = `Deck Score: ${deck_score}`;

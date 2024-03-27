@@ -118,6 +118,8 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
     let maxS = 0;
     let fIdList = [];
     let sIdList = [];
+    let fScoreList = [];
+    let sScoreList = [];
     for (let fId = -1; fId < fList.length; fId++) {
         for (let sId = -1; sId < sList.length; sId++) {
             let afNgProbNoNeed = afNgListNoNeed.reduce((acc, j) => acc + P(5, fId + 1, j, n), 0);
@@ -137,13 +139,15 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
                 maxS = S;
                 fIdList = fList.slice(0, fId + 1).map(val => val[1]);
                 sIdList = sList.slice(0, sId + 1).map(val => val[1]);
+                fScoreList = fList.slice(0, fId + 1).map(val => (10*val[0]).toFixed(2));
+                sScoreList = sList.slice(0, sId + 1).map(val => (10*val[0]).toFixed(2));
 
                 // console.log(`fid:${fId}, f:${f}, sid:${sId}, s:${s}, SMain:${SMain}, w1:${(afNgProbNoNeed)}`);
             }
         }
     }
 
-    return [fIdList, sIdList, (maxS * 100 / n).toFixed(2)];
+    return [fIdList, sIdList, fScoreList, sScoreList, (maxS * 100 / n).toFixed(2)];
 }
 
 
@@ -196,19 +200,26 @@ function transformNumList(nums) {
     return numList;
 }
 
-function transformScoreListForOptimization(scores, detailedSetting) {
+function transformScoreListForOptimization(scores, turn1, detailedSetting) {
     scoreList = []
     scores.forEach(score => {
         scoreList.push(score.value);
     });
 
     const ret = [];
-    const decline = 0.5;
+    let decline = 0.5;
+
+
     if (detailedSetting) {
         for (let i = 0; i < scoreList.length / 2; i++) {
             const subArray1 = [];
             const subArray2 = [];
             for (let j = 0; j < 3; j++) {
+                if(turn1[i]) {
+                    decline = 0.5;
+                } else {
+                    decline = 0.8;
+                }
                 subArray1.push(scoreList[2 * i] * Math.pow(decline, j));
                 subArray2.push(scoreList[2 * i + 1] * Math.pow(decline, j));
             }
