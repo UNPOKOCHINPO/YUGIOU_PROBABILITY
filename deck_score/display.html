@@ -80,17 +80,17 @@
         </table>
     </div>
 
-    
+
 
     <script src="./calc.js"></script>
     <script src="./error.js"></script>
     <script>
         const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影', 'ニビル'];
-        const cardTypes2 = ['禁じられた一滴', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒'];
+        const cardTypes2 = ['禁じられた一滴', '超融合', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒', '倶利伽羅天童'];
         const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7], [3, 9]];
-        const defaultScores2 = [[4, 7], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6]];
-        const turn1 = [true,true,true,false,true,false,false,true];
-        const turn12 = [true,false,true,false,false,false];
+        const defaultScores2 = [[6, 7], [4, 9], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6], [1, 6]];
+        const turn1 = [true, true, true, false, true, false, false, true];
+        const turn12 = [true, false, false, true, false, false, false, true];
 
         function generateTable(listElements, tableName) {
             const tblBody = document.getElementById(tableName);
@@ -147,13 +147,13 @@
             //tbl.setAttribute("border", "1");
         }
 
-        
+
         function generateSortedTable(listElements, scores, tableName) {
             const tblBody = document.getElementById(tableName);
             tblBody.innerHTML = '';
-            
+
             // すべての要素を表に追加
-            for (let i=0; i<listElements.length;i++) {
+            for (let i = 0; i < listElements.length; i++) {
                 // 表の行を作成
                 const row = document.createElement("tr");
 

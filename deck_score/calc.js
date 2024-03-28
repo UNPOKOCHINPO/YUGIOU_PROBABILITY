@@ -139,8 +139,8 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
                 maxS = S;
                 fIdList = fList.slice(0, fId + 1).map(val => val[1]);
                 sIdList = sList.slice(0, sId + 1).map(val => val[1]);
-                fScoreList = fList.slice(0, fId + 1).map(val => (10*val[0]).toFixed(2));
-                sScoreList = sList.slice(0, sId + 1).map(val => (10*val[0]).toFixed(2));
+                fScoreList = fList.slice(0, fId + 1).map(val => (10 * val[0]).toFixed(2));
+                sScoreList = sList.slice(0, sId + 1).map(val => (10 * val[0]).toFixed(2));
 
                 // console.log(`fid:${fId}, f:${f}, sid:${sId}, s:${s}, SMain:${SMain}, w1:${(afNgProbNoNeed)}`);
             }
@@ -151,7 +151,7 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
 }
 
 
-function transformScoreList(scores, nums, detailedSetting) {
+function transformScoreList(scores, nums, simpleSetting) {
     scoreList = []
     numList = []
     scores.forEach(score => {
@@ -163,7 +163,7 @@ function transformScoreList(scores, nums, detailedSetting) {
 
     const ret = [];
     const decline = 0.5;
-    if (detailedSetting) {
+    if (simpleSetting) {
         for (let i = 0; i < scoreList.length / 2; i++) {
             const subArray1 = [];
             const subArray2 = [];
@@ -215,7 +215,7 @@ function transformScoreListForOptimization(scores, turn1, detailedSetting) {
             const subArray1 = [];
             const subArray2 = [];
             for (let j = 0; j < 3; j++) {
-                if(turn1[i]) {
+                if (turn1[i]) {
                     decline = 0.5;
                 } else {
                     decline = 0.8;
