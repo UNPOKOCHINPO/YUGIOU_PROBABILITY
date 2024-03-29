@@ -5,6 +5,9 @@ function combi(n, k) {
     if (n < 0 || k < 0) {
         return 0;
     }
+    if (n < k) {
+        return 0;
+    }
     let ret = 1;
     for (let i = 0; i < k; i++) {
         ret = Math.floor(ret * (n - i) / (i + 1));
@@ -55,14 +58,14 @@ function DeckScore(n, af_score_list, as_score_list, num, num2, no_need_f, no_nee
         let [c1, c2] = af_score_list[i];
         let wi = num[i];
         for (let j = 1; j <= wi; j++) {
-            f += Si(c1, c2, wi, n, true);
+            f += Si(c1, c2, j, n, true);
         }
     }
     for (let i = 0; i < as_score_list.length; i++) {
         let [c1, c2] = as_score_list[i];
         let wi = num2[i];
         for (let j = 1; j <= wi; j++) {
-            s += Si(c1, c2, wi, n, false);
+            s += Si(c1, c2, j, n, false);
         }
     }
 
@@ -80,6 +83,8 @@ function DeckScore(n, af_score_list, as_score_list, num, num2, no_need_f, no_nee
     // Inducement power (penalty is given based on the probability of not drawing at all because inducing too few, and penalty is given based on the probability of drawing too much because there are too many inductions in the original deck)
     let S_sub = ((1 - af_ng_prob_shotage) * f + (1 - as_ng_prob_shotage) * s);
     let S_main = (n - af_len * af_ng_prob_no_need - as_len * as_ng_prob_no_need);
+
+    //console.log(`${f},${s},${af_ng_prob_no_need},${af_ng_prob_shotage},${as_ng_prob_no_need},${as_ng_prob_shotage}`);
     let S = S_sub + S_main;
 
 
@@ -109,9 +114,9 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
     }
     sList.sort((a, b) => b[0] - a[0]);
 
-    let afNgListNoNeed = Array.from({ length: 6 - noNeedF + 1 }, (_, i) => noNeedF + i);
+    let afNgListNoNeed = Array.from({ length: 5 - noNeedF + 1 }, (_, i) => noNeedF + i);
     let afNgListShotage = Array.from({ length: shotageF + 1 }, (_, i) => i);
-    let asNgListNoNeed = Array.from({ length: 7 - noNeedS }, (_, i) => noNeedS + i);
+    let asNgListNoNeed = Array.from({ length: 6 - noNeedS + 1 }, (_, i) => noNeedS + i);
     let asNgListShotage = Array.from({ length: shotageS + 1 }, (_, i) => i);
 
 
@@ -120,6 +125,11 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
     let sIdList = [];
     let fScoreList = [];
     let sScoreList = [];
+
+    afNgProbNoNeed = 0;
+    afNgProbShotage = 0;
+    asNgProbNoNeed = 0;
+    asNgProbShotage = 0;
     for (let fId = -1; fId < fList.length; fId++) {
         for (let sId = -1; sId < sList.length; sId++) {
             let afNgProbNoNeed = afNgListNoNeed.reduce((acc, j) => acc + P(5, fId + 1, j, n), 0);
@@ -142,11 +152,12 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
                 fScoreList = fList.slice(0, fId + 1).map(val => (10 * val[0]).toFixed(2));
                 sScoreList = sList.slice(0, sId + 1).map(val => (10 * val[0]).toFixed(2));
 
+
                 // console.log(`fid:${fId}, f:${f}, sid:${sId}, s:${s}, SMain:${SMain}, w1:${(afNgProbNoNeed)}`);
             }
         }
     }
-
+    //console.log(`${f},${s},${afNgProbNoNeed},${afNgProbShotage},${asNgProbNoNeed},${asNgProbShotage}`);
     return [fIdList, sIdList, fScoreList, sScoreList, (maxS * 100 / n).toFixed(2)];
 }
 
