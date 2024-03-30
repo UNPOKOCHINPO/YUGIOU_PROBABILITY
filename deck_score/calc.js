@@ -33,11 +33,14 @@ function base_s(d, wi, c, n) {
 }
 
 function Si(c1, c2, wi, n, maxxc = true) {
-    let ret = base_s(5, wi, c1, n) / 2;
+    let ret = 0;
     if (maxxc) {
-        ret += base_s(5, wi, c2, n) / 2;
+        ret += base_s(5, wi, c1, n) / 2 + base_s(5, wi, c2, n) / 2;
     } else {
-        ret += base_s(6, wi, c2, n) / 2;
+        draw_in_turn1 = combi(wi,1)*combi(n-wi,4)/combi(n,5);
+        draw_in_turn2 = combi(wi,1)*combi(n-wi,5)/combi(n,6);
+        sum = draw_in_turn1+draw_in_turn2;
+        ret += base_s(5, wi, c1, n) * (draw_in_turn1/sum) + base_s(6, wi, c2, n) * (draw_in_turn2/sum);
     }
     return ret;
 }
