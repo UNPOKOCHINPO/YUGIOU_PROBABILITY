@@ -25,14 +25,14 @@
     </div><br>
 
 
-    <h2>手札誘発のスコア:</h2>
+    <h2>手札誘発のスコア: <button id="zero1" style="color: blue;">スコアを0にする</button> <button id="def1" style="color: blue;">初期設定にする</button></h2>
     <table>
         <tbody id="cardScores">
             <!-- JavaScript will populate this table -->
         </tbody>
     </table>
 
-    <h2>後攻捲り札のスコア:</h2>
+    <h2>後攻捲り札のスコア: <button id="zero2" style="color: blue;">スコアを0にする</button> <button id="def2" style="color: blue;">初期設定にする</button></h2>
     <table>
         <tbody id="cardScores2">
             <!-- JavaScript will populate this table -->
@@ -259,7 +259,7 @@
                     input.min = 0;
                     input.max = 3;
                     input.value = 0;
-                    input.title = `input${i * 3 + i2}`;
+                    input.title = `num${i * 3 + i2}`;
                     container.appendChild(input);
 
 
@@ -275,6 +275,7 @@
                             input.min = 0;
                             input.max = 10;
                             input.value = 6;
+                            input.title = `input${i*3+i2}`;
                             if (!detailMode) {
                                 input.value = defaultScores[3 * i + i2][j - 1];
                             }
@@ -314,7 +315,7 @@
                     input.max = 3;
                     input.value = 0;
 
-                    input.title = `input2${i * 3 + i2}`;
+                    input.title = `num2${i * 3 + i2}`;
                     container.appendChild(input);
 
 
@@ -330,6 +331,7 @@
                             input.min = 0;
                             input.max = 10;
                             input.value = 6;
+                            input.title = `input${i * 3 + i2}`;
                             if (!detailMode) {
                                 input.value = defaultScores2[3 * i + i2][j - 1];
                             }
@@ -361,6 +363,33 @@
         });
         document.getElementById("meta_data").addEventListener("input", function () {
             validateNumber();
+        });
+        document.getElementById('zero1').addEventListener('click', function (){
+            scores = document.querySelectorAll('.score');
+            for (let i=0;i<scores.length;i++){
+                scores[i].value = '0';
+            }
+        });
+        document.getElementById('zero2').addEventListener('click', function () {
+            scores = document.querySelectorAll('.score2');
+            for (let i = 0; i < scores.length; i++) {
+                scores[i].value = '0';
+            }
+        });
+
+        document.getElementById('def1').addEventListener('click', function () {
+            scores = document.querySelectorAll('.score');
+            for (let i = 0; i < scores.length/2; i++) {
+                scores[2 * i].value = defaultScores[i][0];
+                scores[2 * i + 1].value = defaultScores[i][1];
+            }
+        });
+        document.getElementById('def2').addEventListener('click', function () {
+            scores = document.querySelectorAll('.score2');
+            for (let i = 0; i < scores.length/2; i++) {
+                scores[2 * i].value = defaultScores2[i][0];
+                scores[2 * i + 1].value = defaultScores2[i][1];
+            }
         });
 
         // Call function to generate default card scoring inputs
