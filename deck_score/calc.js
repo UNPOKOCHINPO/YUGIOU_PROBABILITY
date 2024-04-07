@@ -94,7 +94,7 @@ function DeckScore(n, af_score_list, as_score_list, num, num2, no_need_f, no_nee
     return (S * 100 / n).toFixed(2);
 }
 
-function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotageF, shotageS) {
+function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotageF, shotageS, maxNumS, maxNumS2) {
 
     let f = 0;
     let s = 0;
@@ -103,7 +103,7 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
 
     for (let scoresId = 0; scoresId < afScoreList.length; scoresId++) {
         let [c1, c2] = afScoreList[scoresId];
-        for (let wi = 1; wi <= 3; wi++) {
+        for (let wi = 1; wi <= maxNumS[scoresId]; wi++) {
             fList.push([Si(c1, c2, wi, n, true), scoresId]);
         }
     }
@@ -111,7 +111,7 @@ function optimizeDeckScore(n, afScoreList, asScoreList, noNeedF, noNeedS, shotag
 
     for (let scoresId = 0; scoresId < asScoreList.length; scoresId++) {
         let [c1, c2] = asScoreList[scoresId];
-        for (let wi = 1; wi <= 3; wi++) {
+        for (let wi = 1; wi <= maxNumS2[scoresId]; wi++) {
             sList.push([Si(c1, c2, wi, n, false), scoresId]);
         }
     }

@@ -20,7 +20,7 @@
         <input type="number" id="yuhatsu_min" title="yuhatsu_min" value="1" min="0" max="5">～<input type="number"
             id="yuhatsu_max" title="yuhatsu_max" value="2" min="0" max="5"><br>
         引きたい後攻捲り札の枚数:<br>
-        <input type="number" id="makuri_min" title="makuri_min" value="1" min="0" max="5">～<input type="number"
+        <input type="number" id="makuri_min" title="makuri_min" value="0" min="0" max="5">～<input type="number"
             id="makuri_max" title="makuri_max" value="1" min="0" max="5"><br>
     </div><br>
 
@@ -49,6 +49,7 @@
     </div><br>
 
     <h2>最適化された場合のデッキスコアとオススメ採用札:</h2>
+    ※オススメ採用札は2024年4月現在のリミットを考慮して出力しています。<br>
     <div id="averageScore" style="display: none;">
         <p id="avgScore"></p>
     </div><br>
@@ -86,11 +87,13 @@
     <script src="./error.js"></script>
     <script>
         const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影', 'ニビル'];
-        const cardTypes2 = ['禁じられた一滴', '超融合', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒', '倶利伽羅天童'];
+        const cardTypes2 = ['禁じられた一滴', '超融合', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒', '倶利伽羅天童', '三戦の才'];
         const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7], [3, 9]];
-        const defaultScores2 = [[6, 7], [4, 9], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6], [1, 6]];
+        const defaultScores2 = [[6, 7], [4, 9], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6], [1, 6], [7,7]];
         const turn1 = [true, true, true, false, true, false, false, true];
         const turn12 = [true, false, false, true, false, false, false, true];
+        const max_num = [3,3,3,3,3,3,3,3];
+        const max_num2 = [3,3,3,3,2,3,1,3,3];
 
         function generateTable(listElements, tableName) {
             const tblBody = document.getElementById(tableName);
@@ -206,7 +209,7 @@
 
 
             // deck_score = deck_Score(40, scores, scores2, 4, 2, 0, 0);
-            let [fList, sList, fscore, sscore, deck_score] = optimizeDeckScore(deck_num, scores, scores2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);//yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
+            let [fList, sList, fscore, sscore, deck_score] = optimizeDeckScore(deck_num, scores, scores2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1, max_num, max_num2);//yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
             your_score = DeckScore(deck_num, scores, scores2, num, num2, yuhatsu_max + 1, makuri_max + 1, yuhatsu_min - 1, makuri_min - 1);
 
             //console.log(fList);
