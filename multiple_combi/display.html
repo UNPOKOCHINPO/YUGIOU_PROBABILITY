@@ -23,6 +23,8 @@
 
     <h2>入力フォーム</h2>
     <form id="sumForm">
+        <label><input type="radio" name="fors" value="先攻" checked>先攻</label>
+        <label><input type="radio" name="fors" value="後攻">後攻</label><br>
         <label for="n">デッキ枚数：</label>
         <input type="number" id="n" value="40" min="40" max="60" required><br><br>
 
@@ -66,6 +68,12 @@
     <script type="text/javascript" src="calc.js"></script>
     <script>
         function calculate() {
+            const fors = document.getElementsByName('fors').item(0).checked;
+            let handNum = 5;
+            if(!fors){
+                handNum = 6;
+            }
+            console.log(fors);
             const n = parseInt(document.getElementById('n').value);
             const one = parseInt(document.getElementById('one').value);
             const two1 = parseInt(document.getElementById('two1').value);
@@ -78,7 +86,7 @@
             const ng3 = parseInt(document.getElementById('ng3').value);
 
             // tsubo.jsの関数を呼び出し
-            res = calcProb(100000, n, one, two1, two2, three1, three2, three3, ng1, ng2, ng3, 5);
+            res = calcProb(100000, n, one, two1, two2, three1, three2, three3, ng1, ng2, ng3, handNum);
 
             // 結果の表示
             document.getElementById('result').innerText = "事故にならずに初動が来る確率：" + res + '%';
