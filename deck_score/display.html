@@ -222,14 +222,14 @@
             sNames = []
             fList.forEach(fid => {
                 if (cardTypes[fid] === 'free'){
-                    fNames.push(document.querySelectorAll(`[title="cardNames${fid}"]`)[0].value);
+                    fNames.push(escapeHtml(document.querySelectorAll(`[title="cardNames${fid}"]`)[0].value));
                 }else{
                     fNames.push(cardTypes[fid]);
                 }
             });
             sList.forEach(sid => {
                 if (cardTypes2[sid] === 'free') {
-                    sNames.push(document.querySelectorAll(`[title="cardNames2${sid}"]`)[0].value);
+                    sNames.push(escapeHtml(document.querySelectorAll(`[title="cardNames2${sid}"]`)[0].value));
                 } else {
                     sNames.push(cardTypes2[sid]);
                 }
@@ -250,6 +250,15 @@
             document.getElementById('yourScore').style.display = 'block'; // Display average score if scores are entered
 
         }
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&")
+                .replace(/</g, "<")
+                .replace(/>/g, ">")
+                .replace(/"/g, '"')
+                .replace(/'/g, "'");
+        }
+
 
         // Add event listener to calculate average score when score changes
         document.addEventListener('input', function (event) {
