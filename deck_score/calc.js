@@ -213,6 +213,14 @@ function transformNumList(nums) {
 
     return numList;
 }
+function transformTextList(nums) {
+    numList = []
+    nums.forEach(num => {
+        numList.push(num.value);
+    });
+
+    return numList;
+}
 
 function transformScoreListForOptimization(scores, turn1, detailedSetting) {
     scoreList = []

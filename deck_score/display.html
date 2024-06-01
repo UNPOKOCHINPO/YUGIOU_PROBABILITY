@@ -86,14 +86,15 @@
     <script src="./calc.js"></script>
     <script src="./error.js"></script>
     <script>
-        const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影', 'ニビル'];
-        const cardTypes2 = ['禁じられた一滴', '超融合', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒', '倶利伽羅天童', '三戦の才'];
-        const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7], [3, 9]];
-        const defaultScores2 = [[6, 7], [4, 9], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6], [1, 6], [7,7]];
-        const turn1 = [true, true, true, false, true, false, false, true];
-        const turn12 = [true, false, false, true, false, false, false, true];
-        const max_num = [3,3,3,3,3,3,3,3];
-        const max_num2 = [3,3,3,3,2,3,1,3,3];
+        const cardTypes = ['増殖するG', '灰流うらら', '屋敷わらし', 'ヴェーラー', 'ドロバ', 'D.D.クロウ', '無限泡影', 'ニビル', 'free', 'free', 'free'];
+        const cardTypes2 = ['禁じられた一滴', '超融合', '拮抗勝負', '冥王結界波', 'サンダーボルト', 'ブラックホール', 'ハーピィの羽箒', '倶利伽羅天童', '三戦の才', 'free', 'free', 'free'];
+        
+        const defaultScores = [[8, 9], [9, 5], [6, 5], [4, 7], [6, 6], [5, 5], [5, 7], [3, 9], [5, 5], [5,5], [5,5]];
+        const defaultScores2 = [[6, 7], [4, 9], [0, 9], [1, 8], [1, 8], [1, 7], [2, 6], [1, 6], [7,7], [5,5], [5,5], [5,5]];
+        const turn1 = [true, true, true, false, true, false, false, true, true, true, true];
+        const turn12 = [true, false, false, true, false, false, false, true, true, true, true];
+        const max_num = [3,3,3,3,3,3,3,3,3,3,3];
+        const max_num2 = [3,3,3,3,2,3,1,3,3,3,3,3];
 
         function generateTable(listElements, tableName) {
             const tblBody = document.getElementById(tableName);
@@ -194,6 +195,7 @@
             scores2 = document.querySelectorAll('.score2');
             num = document.querySelectorAll('.num');
             num2 = document.querySelectorAll('.num2');
+            cardNames = document.querySelectorAll('.card_names');
 
 
             const detailBtn = document.getElementById('detailBtn');
@@ -203,6 +205,8 @@
             //scores2 = transformScoreList(scores2, num2, !detailMode);
             num = transformNumList(num);
             num2 = transformNumList(num2);
+            //cardNames = transformTextList(cardNames);
+            
 
             scores = transformScoreListForOptimization(scores, turn1, !detailMode);
             scores2 = transformScoreListForOptimization(scores2, turn12, !detailMode);
@@ -217,12 +221,20 @@
             fNames = []
             sNames = []
             fList.forEach(fid => {
-                fNames.push(cardTypes[fid]);
+                if (cardTypes[fid] === 'free'){
+                    fNames.push(document.querySelectorAll(`[title="cardNames${fid}"]`)[0].value);
+                }else{
+                    fNames.push(cardTypes[fid]);
+                }
             });
             sList.forEach(sid => {
-                sNames.push(cardTypes2[sid]);
+                if (cardTypes2[sid] === 'free') {
+                    sNames.push(document.querySelectorAll(`[title="cardNames2${sid}"]`)[0].value);
+                } else {
+                    sNames.push(cardTypes2[sid]);
+                }
             });
-            //console.log(deck_score);
+            console.log(fNames);
 
             generateTable(fNames, 'optimizedScores');
             generateTable(sNames, 'optimizedScores2');
@@ -255,7 +267,19 @@
                 for (let i2 = 0; i2 < 3; i2++) {
 
                     const container = document.createElement('td');
-                    container.textContent = `${cardTypes[i * 3 + i2]}:`;
+                    if(cardTypes[i*3+i2] === 'free'){
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = `card${i*3+i2}`;
+                        input.title = `cardNames${i * 3 + i2}`;
+                        input.style.width = '90px'; // 幅を100pxに設定
+                        input.maxLength = 8; // 入力文字数を10文字以内に制限
+                        input.classList.add('card_names');
+                        container.appendChild(input);
+                    }
+                    else{
+                        container.textContent = `${cardTypes[i * 3 + i2]}:`;
+                    }
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.classList.add('num');
@@ -310,7 +334,20 @@
                         break;
                     }
                     const container = document.createElement('td');
-                    container.textContent = `${cardTypes2[i * 3 + i2]}:`;
+
+                    if (cardTypes2[i * 3 + i2] === 'free') {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = `card${i * 3 + i2}`;
+                        input.title = `cardNames2${i * 3 + i2}`;
+                        input.style.width = '90px'; // 幅を100pxに設定
+                        input.maxLength = 8; // 入力文字数を10文字以内に制限
+                        input.classList.add('card_names2');
+                        container.appendChild(input);
+                    }else{
+                        container.textContent = `${cardTypes2[i * 3 + i2]}:`;
+                    }
+
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.classList.add('num2');
